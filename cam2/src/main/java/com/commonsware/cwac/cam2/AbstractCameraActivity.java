@@ -172,6 +172,9 @@ abstract public class AbstractCameraActivity extends Activity {
   public static final String EXTRA_AUDIO_ENCODER=
           "cwac_cam2_audio_encoder";
 
+  public static final String EXTRA_VIDEO_ENCODER=
+          "cwac_cam2_video_encoder";
+
   /**
    * @return true if the activity wants FEATURE_ACTION_BAR_OVERLAY,
    * false otherwise

@@ -22,6 +22,7 @@ public class VideoTransaction {
   int sizeLimit=0;
   int durationLimit=0;
   int audioEncoder = 0;
+  int videoEncoder = 0;
 
   private VideoTransaction() {
     // please use the Builder
@@ -47,6 +48,10 @@ public class VideoTransaction {
     return audioEncoder;
   }
 
+  public int getVideoEncoder() {
+    return videoEncoder;
+  }
+
   public static class Builder {
     VideoTransaction result=new VideoTransaction();
 
@@ -68,6 +73,12 @@ public class VideoTransaction {
 
     public Builder audioEncoder(int audioEncoder) {
       result.audioEncoder=audioEncoder;
+
+      return(this);
+    }
+
+    public Builder videoEncoder(int videoEncoder) {
+      result.videoEncoder=videoEncoder;
 
       return(this);
     }

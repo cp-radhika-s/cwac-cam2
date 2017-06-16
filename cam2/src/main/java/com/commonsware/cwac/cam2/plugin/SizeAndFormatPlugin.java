@@ -136,12 +136,18 @@ public class SizeAndFormatPlugin implements CameraPlugin {
         camcorderProfile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_LOW);
       }
 
-      if(camcorderProfile != null && xact.getAudioEncoder() == 1) {
-        camcorderProfile.audioCodec = MediaRecorder.AudioEncoder.AAC;
-      }
 
       if(camcorderProfile != null) {
+
+        if(xact.getAudioEncoder() == 1) {
+          camcorderProfile.audioCodec = MediaRecorder.AudioEncoder.AAC;
+        }
+        if(xact.getVideoEncoder() == 1) {
+          camcorderProfile.videoCodec = MediaRecorder.VideoEncoder.H264;
+        }
+
         recorder.setProfile(camcorderProfile);
+
       } else {
         throw new IllegalStateException(
                 "cannot find valid CamcorderProfile");

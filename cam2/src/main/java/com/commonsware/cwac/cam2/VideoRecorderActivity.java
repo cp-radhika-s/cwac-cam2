@@ -80,7 +80,8 @@ public class VideoRecorderActivity extends AbstractCameraActivity {
         getIntent().getBooleanExtra(EXTRA_FACING_EXACT_MATCH, false),
         (ChronoType)getIntent().getSerializableExtra(EXTRA_CHRONOTYPE),
         getIntent().getBooleanExtra(EXTRA_SHOW_RULE_OF_THIRDS_GRID, false),
-            getIntent().getIntExtra(EXTRA_AUDIO_ENCODER, 0)));
+            getIntent().getIntExtra(EXTRA_AUDIO_ENCODER, 0),
+            getIntent().getIntExtra(EXTRA_VIDEO_ENCODER, 0)));
   }
 
   @SuppressWarnings("unused")
@@ -109,6 +110,20 @@ public class VideoRecorderActivity extends AbstractCameraActivity {
     private final int value;
 
     private AudioEncoder(int value) {
+      this.value=value;
+    }
+
+    int getValue() {
+      return(value);
+    }
+  }
+
+  public enum VideoEncoder {
+    DEFAULT(0), H264(1);
+
+    private final int value;
+
+    private VideoEncoder(int value) {
       this.value=value;
     }
 
@@ -172,6 +187,11 @@ public class VideoRecorderActivity extends AbstractCameraActivity {
     public IntentBuilder audioEncoder(AudioEncoder audioEncoder) {
       result.putExtra(EXTRA_AUDIO_ENCODER, audioEncoder.getValue());
         return(this);
+    }
+
+    public IntentBuilder videoEncoder(VideoEncoder videoEncoder) {
+      result.putExtra(EXTRA_VIDEO_ENCODER, videoEncoder.getValue());
+      return(this);
     }
 
     /**
