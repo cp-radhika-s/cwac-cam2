@@ -69,6 +69,8 @@ public class CameraFragment extends Fragment
   private static final String ARG_CHRONOTYPE="chronotype";
   private static final String ARG_RULE_OF_THIRDS="ruleOfThirds";
   private static final String ARG_TIMER_DURATION="timerDuration";
+  private static final String ARG_AUDIO_ENCODER="audioEncoder";
+
   private static final int PINCH_ZOOM_DELTA=20;
   private CameraController ctlr;
   private ViewGroup previewStack;
@@ -117,7 +119,8 @@ public class CameraFragment extends Fragment
                                                 ZoomStyle zoomStyle,
                                                 boolean facingExactMatch,
                                                 ChronoType chronoType,
-                                                boolean ruleOfThirds) {
+                                                boolean ruleOfThirds,
+                                                int audioEncoder) {
     CameraFragment f=new CameraFragment();
     Bundle args=new Bundle();
 
@@ -130,6 +133,7 @@ public class CameraFragment extends Fragment
     args.putSerializable(ARG_ZOOM_STYLE, zoomStyle);
     args.putBoolean(ARG_FACING_EXACT_MATCH, facingExactMatch);
     args.putBoolean(ARG_RULE_OF_THIRDS, ruleOfThirds);
+    args.putInt(ARG_AUDIO_ENCODER, audioEncoder);
 
     if (durationLimit>0 || chronoType!=ChronoType.COUNT_DOWN) {
       args.putSerializable(ARG_CHRONOTYPE, chronoType);
@@ -515,7 +519,8 @@ public class CameraFragment extends Fragment
           .quality(getArguments().getInt(ARG_QUALITY, 1))
           .sizeLimit(getArguments().getInt(ARG_SIZE_LIMIT, 0))
           .durationLimit(
-            getArguments().getInt(ARG_DURATION_LIMIT, 0));
+            getArguments().getInt(ARG_DURATION_LIMIT, 0))
+        .audioEncoder(getArguments().getInt(ARG_AUDIO_ENCODER, 0));
 
         ctlr.recordVideo(b.build());
         isVideoRecording=true;

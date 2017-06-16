@@ -79,7 +79,8 @@ public class VideoRecorderActivity extends AbstractCameraActivity {
         (ZoomStyle)getIntent().getSerializableExtra(EXTRA_ZOOM_STYLE),
         getIntent().getBooleanExtra(EXTRA_FACING_EXACT_MATCH, false),
         (ChronoType)getIntent().getSerializableExtra(EXTRA_CHRONOTYPE),
-        getIntent().getBooleanExtra(EXTRA_SHOW_RULE_OF_THIRDS_GRID, false)));
+        getIntent().getBooleanExtra(EXTRA_SHOW_RULE_OF_THIRDS_GRID, false),
+            getIntent().getIntExtra(EXTRA_AUDIO_ENCODER, 0)));
   }
 
   @SuppressWarnings("unused")
@@ -98,6 +99,21 @@ public class VideoRecorderActivity extends AbstractCameraActivity {
          finish();
         }
       });
+    }
+  }
+
+
+  public enum AudioEncoder {
+    DEFAULT(0), AAC(1);
+
+    private final int value;
+
+    private AudioEncoder(int value) {
+      this.value=value;
+    }
+
+    int getValue() {
+      return(value);
     }
   }
 
@@ -151,6 +167,11 @@ public class VideoRecorderActivity extends AbstractCameraActivity {
       result.putExtra(MediaStore.EXTRA_SIZE_LIMIT, limit);
 
       return(this);
+    }
+
+    public IntentBuilder audioEncoder(AudioEncoder audioEncoder) {
+      result.putExtra(EXTRA_AUDIO_ENCODER, audioEncoder.getValue());
+        return(this);
     }
 
     /**

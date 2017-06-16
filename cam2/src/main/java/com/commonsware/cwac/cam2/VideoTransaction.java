@@ -21,6 +21,7 @@ public class VideoTransaction {
   int quality=1;
   int sizeLimit=0;
   int durationLimit=0;
+  int audioEncoder = 0;
 
   private VideoTransaction() {
     // please use the Builder
@@ -42,6 +43,10 @@ public class VideoTransaction {
     return(durationLimit);
   }
 
+  public int getAudioEncoder() {
+    return audioEncoder;
+  }
+
   public static class Builder {
     VideoTransaction result=new VideoTransaction();
 
@@ -57,6 +62,12 @@ public class VideoTransaction {
 
     public Builder quality(int quality) {
       result.quality=quality;
+
+      return(this);
+    }
+
+    public Builder audioEncoder(int audioEncoder) {
+      result.audioEncoder=audioEncoder;
 
       return(this);
     }

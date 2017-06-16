@@ -334,7 +334,6 @@ public class ClassicCameraEngine extends CameraEngine
         recorder.setCamera(camera);
         recorder.setAudioSource(
           MediaRecorder.AudioSource.CAMCORDER);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         ((Session)session).configureRecorder(xact, recorder);

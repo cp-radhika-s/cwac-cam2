@@ -124,18 +124,27 @@ public class SizeAndFormatPlugin implements CameraPlugin {
         highProfile);
       boolean canGoLow=CamcorderProfile.hasProfile(cameraId,
         CamcorderProfile.QUALITY_LOW);
+      boolean canGo480P = CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_480P);
 
-      if (canGoHigh && (xact.getQuality()==1 || !canGoLow)) {
-        recorder.setProfile(CamcorderProfile.get(cameraId,
-          highProfile));
+      CamcorderProfile camcorderProfile = null;
+
+      if (canGoHigh && (xact.getQuality()==1 || (xact.getQuality() == 2 && !canGo480P) || (!canGoLow && !canGo480P))) {
+        camcorderProfile = CamcorderProfile.get(cameraId, highProfile);
+      } else if(canGo480P && xact.getQuality() == 2) {
+        camcorderProfile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_480P);
+      } else if (canGoLow) {
+        camcorderProfile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_LOW);
       }
-      else if (canGoLow) {
-        recorder.setProfile(CamcorderProfile.get(cameraId,
-          CamcorderProfile.QUALITY_LOW));
+
+      if(camcorderProfile != null && xact.getAudioEncoder() == 1) {
+        camcorderProfile.audioCodec = MediaRecorder.AudioEncoder.AAC;
       }
-      else {
+
+      if(camcorderProfile != null) {
+        recorder.setProfile(camcorderProfile);
+      } else {
         throw new IllegalStateException(
-          "cannot find valid CamcorderProfile");
+                "cannot find valid CamcorderProfile");
       }
     }
 

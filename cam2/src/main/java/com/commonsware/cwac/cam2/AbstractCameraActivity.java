@@ -169,6 +169,9 @@ abstract public class AbstractCameraActivity extends Activity {
   public static final String EXTRA_SHOW_RULE_OF_THIRDS_GRID=
     "cwac_cam2_show_rule_of_thirds_grid";
 
+  public static final String EXTRA_AUDIO_ENCODER=
+          "cwac_cam2_audio_encoder";
+
   /**
    * @return true if the activity wants FEATURE_ACTION_BAR_OVERLAY,
    * false otherwise
@@ -494,7 +497,7 @@ abstract public class AbstractCameraActivity extends Activity {
   }
 
   public enum Quality {
-    LOW(0), HIGH(1);
+    LOW(0), HIGH(1), Q480P(2);
 
     private final int value;
 
