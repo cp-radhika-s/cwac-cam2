@@ -444,25 +444,16 @@ abstract public class AbstractCameraActivity extends Activity {
   }
 
   protected void lockOrientation(OrientationLockMode mode) {
-    if (mode==null || mode==OrientationLockMode.DEFAULT) {
-      int orientation=getResources().getConfiguration().orientation;
+    if (mode!=null && mode!=OrientationLockMode.DEFAULT) {
 
-      if (orientation==Configuration.ORIENTATION_LANDSCAPE){
-        setRequestedOrientation(SCREEN_ORIENTATION_LANDSCAPE);
-      }
-      else if (orientation==Configuration.ORIENTATION_PORTRAIT){
-        setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT);
+      if (mode==OrientationLockMode.LANDSCAPE) {
+        setRequestedOrientation(SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
       }
       else {
-        setRequestedOrientation(SCREEN_ORIENTATION_UNSPECIFIED);
+        setRequestedOrientation(
+                SCREEN_ORIENTATION_SENSOR_PORTRAIT);
       }
-    }
-    else if (mode==OrientationLockMode.LANDSCAPE) {
-      setRequestedOrientation(SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-    }
-    else {
-      setRequestedOrientation(
-          SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+
     }
   }
 

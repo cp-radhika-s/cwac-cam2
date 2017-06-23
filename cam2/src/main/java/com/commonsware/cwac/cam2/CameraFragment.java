@@ -26,6 +26,7 @@ import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -47,6 +48,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.LinkedList;
+
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
 /**
  * Fragment for displaying a camera preview, with hooks to allow
@@ -514,6 +519,8 @@ public class CameraFragment extends Fragment
     }
     else {
       try {
+        lockCurrentOrientation();
+
         VideoTransaction.Builder b=
           new VideoTransaction.Builder();
         Uri output=getArguments().getParcelable(ARG_OUTPUT);
@@ -544,6 +551,21 @@ public class CameraFragment extends Fragment
       }
     }
   }
+
+  public void lockCurrentOrientation() {
+    int orientation=getResources().getConfiguration().orientation;
+
+    if (orientation== Configuration.ORIENTATION_LANDSCAPE){
+      getActivity().setRequestedOrientation(SCREEN_ORIENTATION_LANDSCAPE);
+    }
+    else if (orientation==Configuration.ORIENTATION_PORTRAIT){
+      getActivity().setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT);
+    }
+    else {
+      getActivity().setRequestedOrientation(SCREEN_ORIENTATION_UNSPECIFIED);
+    }
+  }
+
 
   public void stopVideoRecording() {
     stopVideoRecording(true);
