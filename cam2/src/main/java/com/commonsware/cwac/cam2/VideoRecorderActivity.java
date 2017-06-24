@@ -22,6 +22,9 @@ import android.provider.MediaStore;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Activity for recording video. Analogue of CameraActivity.
  * Supports the same protocol, in terms of extras and return data,\
@@ -66,7 +69,16 @@ public class VideoRecorderActivity extends AbstractCameraActivity {
 
   @Override
   protected void configEngine(CameraEngine engine) {
-    // no-op
+    List<FlashMode> flashModes=
+            (List<FlashMode>)getIntent().getSerializableExtra(EXTRA_FLASH_MODES);
+
+    if (flashModes==null) {
+      flashModes=new ArrayList<FlashMode>();
+    }
+
+    if (flashModes!=null) {
+      engine.setPreferredFlashModes(flashModes);
+    }
   }
 
   @Override

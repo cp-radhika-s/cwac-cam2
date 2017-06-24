@@ -19,14 +19,11 @@
 
 package com.commonsware.cwac.cam2;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -38,15 +35,13 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 import android.widget.Chronometer;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
@@ -80,8 +75,9 @@ public class CameraFragment extends Fragment
   private static final int PINCH_ZOOM_DELTA=20;
   private CameraController ctlr;
   private ViewGroup previewStack;
-  private FloatingActionButton fabPicture;
-  private FloatingActionButton fabSwitch;
+  private ImageButton fabPicture;
+  private ImageButton flash;
+  private ImageButton fabSwitch;
   private View progress;
   private boolean isVideoRecording=false;
   private boolean mirrorPreview=false;
@@ -270,12 +266,28 @@ public class CameraFragment extends Fragment
 
     progress=v.findViewById(R.id.cwac_cam2_progress);
     fabPicture=
-      (FloatingActionButton)v.findViewById(R.id.cwac_cam2_picture);
+      (ImageButton) v.findViewById(R.id.capture);
+
+    flash = (ImageButton) v.findViewById(R.id.flash);
+    flash.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        FlashMode currentFlash = getController().getCurrentFlashMode();
+        if(currentFlash != null) {
+          if(currentFlash == FlashMode.OFF) {
+            setFlashMode(FlashMode.TORCH);
+          } else if(currentFlash == FlashMode.TORCH) {
+            setFlashMode(FlashMode.OFF);
+          }
+        }
+      }
+    });
+
     reverseChronometer=
       (ReverseChronometer)v.findViewById(R.id.rchrono);
 
     if (isVideo()) {
-      fabPicture.setImageResource(R.drawable.cwac_cam2_ic_videocam);
+      fabPicture.setImageResource(R.drawable.mcam_action_capture);
       chronometer=(Chronometer)v.findViewById(R.id.chrono);
     }
 
@@ -286,8 +298,10 @@ public class CameraFragment extends Fragment
       }
     });
 
-    fabSwitch=(FloatingActionButton)v.findViewById(
-      R.id.cwac_cam2_switch_camera);
+    fabSwitch=(ImageButton) v.findViewById(
+      R.id.facing);
+    fabSwitch.setColorFilter(Color.WHITE);
+
     fabSwitch.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -305,14 +319,12 @@ public class CameraFragment extends Fragment
       }
     });
 
-    changeMenuIconAnimation(
-      (FloatingActionMenu)v.findViewById(R.id.cwac_cam2_settings));
-
     onHiddenChanged(false); // hack, since this does not get
     // called on initial display
 
     fabPicture.setEnabled(false);
     fabSwitch.setEnabled(false);
+    flash.setEnabled(false);
 
     if (ctlr!=null && ctlr.getNumberOfCameras()>0) {
       prepController();
@@ -404,6 +416,7 @@ public class CameraFragment extends Fragment
       progress.setVisibility(View.GONE);
       fabSwitch.setEnabled(canSwitchSources());
       fabPicture.setEnabled(true);
+      flash.setEnabled(true);
       zoomSlider=(SeekBar)getView().findViewById(R.id.cwac_cam2_zoom);
 
       int timerDuration=getArguments().getInt(ARG_TIMER_DURATION);
@@ -435,6 +448,8 @@ public class CameraFragment extends Fragment
         previewStack.setOnTouchListener(null);
         zoomSlider.setVisibility(View.GONE);
       }
+
+      refreshFlashModeView();
     }
     else {
       ctlr.postError(ErrorConstants.ERROR_OPEN_CAMERA,
@@ -496,6 +511,35 @@ public class CameraFragment extends Fragment
     }
   }
 
+  private void setFlashMode(FlashMode flashmode){
+    try {
+      ctlr.stop();
+      ArrayList<FlashMode> newFlashMode = new ArrayList<>();
+      newFlashMode.add(flashmode);
+      ctlr.getEngine().setPreferredFlashModes(newFlashMode);
+      ctlr.start();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void refreshFlashModeView() {
+    FlashMode current = getController().getCurrentFlashMode();
+    if(current == null) {
+      flash.setVisibility(View.GONE);
+    } else {
+      flash.setVisibility(View.VISIBLE);
+      if (current == FlashMode.ALWAYS || current == FlashMode.TORCH) {
+        flash.setImageResource(R.drawable.cwac_cam2_ic_flash_on);
+      } else if (current == FlashMode.AUTO) {
+        flash.setImageResource(R.drawable.cwac_cam2_ic_flash_auto);
+      } else {
+        flash.setImageResource(R.drawable.cwac_cam2_ic_flash_off);
+      }
+    }
+  }
+
   private void takePicture() {
     Uri output=getArguments().getParcelable(ARG_OUTPUT);
 
@@ -536,12 +580,9 @@ public class CameraFragment extends Fragment
         ctlr.recordVideo(b.build());
         isVideoRecording=true;
         fabPicture.setImageResource(
-          R.drawable.cwac_cam2_ic_stop);
-        fabPicture.setColorNormalResId(
-          R.color.cwac_cam2_recording_fab);
-        fabPicture.setColorPressedResId(
-          R.color.cwac_cam2_recording_fab_pressed);
+          R.drawable.mcam_action_stop);
         fabSwitch.setEnabled(false);
+        flash.setEnabled(false);
         configureChronometer();
       }
       catch (Exception e) {
@@ -589,12 +630,9 @@ public class CameraFragment extends Fragment
 
   private void setVideoFABToNormal() {
     fabPicture.setImageResource(
-      R.drawable.cwac_cam2_ic_videocam);
-    fabPicture.setColorNormalResId(
-      R.color.cwac_cam2_picture_fab);
-    fabPicture.setColorPressedResId(
-      R.color.cwac_cam2_picture_fab_pressed);
+      R.drawable.mcam_action_capture);
     fabSwitch.setEnabled(canSwitchSources());
+    flash.setEnabled(true);
   }
 
   private boolean canSwitchSources() {
@@ -677,42 +715,6 @@ public class CameraFragment extends Fragment
   }
 
   // based on https://goo.gl/3IUM8K
-
-  private void changeMenuIconAnimation(
-    final FloatingActionMenu menu) {
-    AnimatorSet set=new AnimatorSet();
-    final ImageView v=menu.getMenuIconView();
-    ObjectAnimator scaleOutX=
-      ObjectAnimator.ofFloat(v, "scaleX", 1.0f, 0.2f);
-    ObjectAnimator scaleOutY=
-      ObjectAnimator.ofFloat(v, "scaleY", 1.0f, 0.2f);
-    ObjectAnimator scaleInX=
-      ObjectAnimator.ofFloat(v, "scaleX", 0.2f, 1.0f);
-    ObjectAnimator scaleInY=
-      ObjectAnimator.ofFloat(v, "scaleY", 0.2f, 1.0f);
-
-    scaleOutX.setDuration(50);
-    scaleOutY.setDuration(50);
-
-    scaleInX.setDuration(150);
-    scaleInY.setDuration(150);
-    scaleInX.addListener(new AnimatorListenerAdapter() {
-      @Override
-      public void onAnimationStart(Animator animation) {
-        v.setImageResource(menu.isOpened()
-          ? R.drawable.cwac_cam2_ic_action_settings
-          : R.drawable.cwac_cam2_ic_close);
-        // yes, that seems backwards, but it works
-        // presumably, opened state not yet toggled
-      }
-    });
-
-    set.play(scaleOutX).with(scaleOutY);
-    set.play(scaleInX).with(scaleInY).after(scaleOutX);
-    set.setInterpolator(new OvershootInterpolator(2));
-    menu.setIconToggleAnimatorSet(set);
-  }
-
   private ZoomStyle getZoomStyle() {
     ZoomStyle result=
       (ZoomStyle)getArguments().getSerializable(ARG_ZOOM_STYLE);
