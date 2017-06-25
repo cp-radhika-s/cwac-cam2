@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <FrameLayout
+    android:id="@+id/cwac_cam2_preview_stack"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.commonsware.cwac.cam2.CameraView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+    <com.commonsware.cwac.cam2.RuleOfThirdsOverlay
+      android:id="@+id/rule_of_thirds"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="gone" />
+  </FrameLayout>
+
+  <ProgressBar
+    android:id="@+id/cwac_cam2_progress"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:visibility="visible" />
+
+  <RelativeLayout
+      android:id="@+id/controlsFrame"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_alignParentRight="true"
+      android:background="#9000"
+      android:elevation="@dimen/mcam_toolbar_elevation"
+      android:paddingBottom="@dimen/mcam_content_inset_less"
+      android:paddingLeft="@dimen/mcam_content_inset"
+      android:paddingRight="@dimen/mcam_content_inset"
+      android:paddingTop="@dimen/mcam_content_inset_less"
+      tools:ignore="UnusedAttribute">
+
+    <ImageButton
+        android:id="@+id/facing"
+        android:layout_width="@dimen/mcam_action_icon_size_smaller"
+        android:layout_height="@dimen/mcam_action_icon_size_smaller"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/mcam_circle_selector"
+        android:padding="@dimen/mcam_content_inset_less"
+        android:scaleType="fitXY"
+        android:tint="@android:color/white"
+        tools:ignore="ContentDescription"
+        android:src="@drawable/ic_switch_camera_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/flash"
+        android:layout_width="@dimen/mcam_action_icon_size_smaller"
+        android:layout_height="@dimen/mcam_action_icon_size_smaller"
+        android:layout_centerVertical="true"
+        android:layout_above="@id/facing"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/mcam_circle_selector"
+        android:padding="@dimen/mcam_content_inset_less"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        tools:ignore="ContentDescription"
+        android:tint="@android:color/white" />
+
+    <ImageButton
+        android:id="@+id/capture"
+        android:layout_width="@dimen/mcam_action_icon_size"
+        android:layout_height="@dimen/mcam_action_icon_size"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="@drawable/mcam_circle_white"
+        android:scaleType="center"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/mcam_action_capture" />
+
+    <Chronometer
+        android:id="@+id/chrono"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="@dimen/cwac_cam2_fragment_chrono_margin"
+        android:layout_marginRight="@dimen/cwac_cam2_fragment_chrono_margin"
+        android:layout_marginTop="@dimen/cwac_cam2_fragment_chrono_margin"
+        android:textColor="@android:color/white"
+        android:padding="4dp"
+        android:visibility="gone" />
+
+    <com.commonsware.cwac.cam2.ReverseChronometer
+        android:id="@+id/rchrono"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="@dimen/cwac_cam2_fragment_chrono_margin"
+        android:layout_marginRight="@dimen/cwac_cam2_fragment_chrono_margin"
+        android:layout_marginTop="@dimen/cwac_cam2_fragment_chrono_margin"
+        android:textColor="@android:color/white"
+        android:padding="4dp"
+        android:visibility="gone" />
+
+  </RelativeLayout>
+
+  <SeekBar
+    android:id="@+id/cwac_cam2_zoom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+      android:layout_alignParentBottom="true"
+      android:layout_toLeftOf="@id/controlsFrame"
+    android:max="100"
+    android:visibility="gone" />
+
+
+</RelativeLayout>
