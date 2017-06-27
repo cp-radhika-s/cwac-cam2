@@ -22,6 +22,7 @@ package com.commonsware.cwac.cam2;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.MediaScannerConnection;
@@ -46,6 +47,7 @@ import java.util.LinkedList;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
 /**
@@ -597,10 +599,10 @@ public class CameraFragment extends Fragment
     int orientation=getResources().getConfiguration().orientation;
 
     if (orientation== Configuration.ORIENTATION_LANDSCAPE){
-      getActivity().setRequestedOrientation(SCREEN_ORIENTATION_LANDSCAPE);
+      getActivity().setRequestedOrientation(SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     }
     else if (orientation==Configuration.ORIENTATION_PORTRAIT){
-      getActivity().setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT);
+      getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
     }
     else {
       getActivity().setRequestedOrientation(SCREEN_ORIENTATION_UNSPECIFIED);
